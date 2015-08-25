@@ -1,18 +1,18 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial rfidReader(2,3); // Digital pins 2 and 3 connect to pins 1 and 2 of the RMD6300
+SoftwareSerial rfidReader(2,3); // Pines digitales 2 y 3 del Arduino UNO conectados a los pines 1 (TX) y 2 (RX) del lector RFID RMD6300
 
 void setup() {  
   Serial.begin(9600);
-  rfidReader.begin(9600); // the RDM6300 runs at 9600bps
-  Serial.println(".....INICIANDO....."); 
+  rfidReader.begin(9600); // RDM6300 -> 9600bps
+  Serial.println("...............INICIANDO..............."); 
 }
 
 void loop(){
   int i=0;
   if (rfidReader.available()>13){
       Serial.println("--------------------------------------------");
-      Serial.println("TAG NUMBER:");
+      Serial.println("CODIGO RFID:");
       Serial.println("--------------------------------------------");
       while(i<12){
         Serial.print(rfidReader.read());  
@@ -27,7 +27,3 @@ void loop(){
   delay(4000);
   i=0;
 }
-  
-
-
-
