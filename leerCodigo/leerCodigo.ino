@@ -100,7 +100,15 @@ void leerCodigo(){
     Serial.println(message); //...print it out
     
 
+// Cambiar a pagina Escritorio
+// myNextion.sendCommand("page Escritorio");
 
+// Cambiar foto
+// myNextion.sendCommand("p0.pic=2");
+
+// Capturar boton
+// Hacer marca
+// Si la marca se hace correctamente, mostrar pagina mensaje exitoso, sino tratar de nuevo
 
     
     Serial.println("Acceso Valido");
