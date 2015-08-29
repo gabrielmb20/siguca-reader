@@ -1,5 +1,13 @@
+// ------------------------------------------------------------------------------------------
+// Librerías
+// ------------------------------------------------------------------------------------------
 #include <SoftwareSerial.h>
-SoftwareSerial RFID(2, 3); // RX y TX Arduino UNO, para lectura solo es necesario RX para recibir el codigo del puerto TX del lector.
+#include "Nextion.h"
+
+
+SoftwareSerial nextion(2, 3);// Nextion TX al pin 2 y RX al pin 3 del Arduino UNO
+SoftwareSerial RFID(4, 5); // RFID TX al pin 4 y RX al pin 5 del Arduino UNO
+Nextion myNextion(nextion, 9600); // Crear un objeto Nextion llamado myNextion usando un puerto serial a 9600bps
 int data1 = 0;
 int ok = -1;
 int yes = 13;
@@ -22,6 +30,7 @@ int newtag[14] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 void setup(){
   RFID.begin(9600);    // start serial to RFID reader
   Serial.begin(9600);  // start serial to PC 
+  myNextion.init();
   pinMode(yes, OUTPUT); // for status LEDs
   pinMode(no, OUTPUT);
 }
@@ -86,6 +95,14 @@ void leerCodigo(){
 // ------------------------------------------------------------------------------------------
   // Codigo Valido
   if (ok > 0){
+    myNextion.sendCommand("page Escritorio");
+    String message = myNextion.listen(); //check for message
+    Serial.println(message); //...print it out
+    
+
+
+
+    
     Serial.println("Acceso Valido");
     digitalWrite(yes, HIGH);
     delay(1000);
@@ -102,10 +119,10 @@ void leerCodigo(){
   }
 }
 
+
 // ------------------------------------------------------------------------------------------
 // LOOP
 // ------------------------------------------------------------------------------------------
-void loop()
-{
+void loop(){
   leerCodigo();
 }
