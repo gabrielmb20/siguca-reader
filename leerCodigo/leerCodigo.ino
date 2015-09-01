@@ -4,6 +4,7 @@
 #include <SoftwareSerial.h>
 #include "Nextion.h"
 
+// Utilizando múltiples puertos "Software Serial", sólo uno puede recibir información a la vez. 
 
 SoftwareSerial nextion(2, 3);// Nextion TX al pin 2 y RX al pin 3 del Arduino UNO
 SoftwareSerial RFID(4, 5); // RFID TX al pin 4 y RX al pin 5 del Arduino UNO
@@ -12,6 +13,7 @@ int data1 = 0;
 int ok = -1;
 int yes = 13;
 int no = 12;
+String boton;
 
 // ------------------------------------------------------------------------------------------
 // CODIGOS VALIDOS
@@ -28,16 +30,21 @@ int newtag[14] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 // SETUP
 // ------------------------------------------------------------------------------------------
 void setup(){
-  RFID.begin(9600);    // start serial to RFID reader
   Serial.begin(9600);  // start serial to PC 
   myNextion.init();
-  pinMode(yes, OUTPUT); // for status LEDs
-  pinMode(no, OUTPUT);
+  RFID.begin(9600);    // start serial to RFID reader
+// By default, the last intialized port is listening.
+  
+  
+  
+//  pinMode(yes, OUTPUT); // for status LEDs
+//  pinMode(no, OUTPUT); 
+  
 }
 
 
 // ------------------------------------------------------------------------------------------
-// SETUP
+// COMPARAR CODIGO
 // ------------------------------------------------------------------------------------------
 boolean compararCodigo(int aa[14], int bb[14]){
   boolean ff = false;
@@ -78,7 +85,7 @@ void leerCodigo(){
 
   if (RFID.available() > 0){
     // Lectura del codigo RFID, se necesitan algunos segundos para permitir que la informacion ingrese en el bufer serial.
-    delay(100);  
+    delay(150);  
     // Lectura de los 14 bits del codigo
     for (int z = 0 ; z < 14 ; z++){
       data1 = RFID.read();
@@ -95,23 +102,8 @@ void leerCodigo(){
 // ------------------------------------------------------------------------------------------
   // Codigo Valido
   if (ok > 0){
-    myNextion.sendCommand("page Escritorio");
-    String message = myNextion.listen(); //check for message
-    Serial.println(message); //...print it out
-    
-
-// Cambiar a pagina Escritorio
-// myNextion.sendCommand("page Escritorio");
-
-// Cambiar foto
-// myNextion.sendCommand("p0.pic=2");
-
-// Capturar boton
-// Hacer marca
-// Si la marca se hace correctamente, mostrar pagina mensaje exitoso, sino tratar de nuevo
-
-    
-    Serial.println("Acceso Valido");
+    Serial.println("Acceso Valido");    
+    seleccionarBoton();
     digitalWrite(yes, HIGH);
     delay(1000);
     digitalWrite(yes, LOW); 
@@ -127,10 +119,40 @@ void leerCodigo(){
   }
 }
 
+// ------------------------------------------------------------------------------------------
+// SELECCIONAR BOTON
+// ------------------------------------------------------------------------------------------
+void seleccionarBoton(){
+   myNextion.sendCommand("page Escritorio");  
+   nextion.listen();
+   boton="";
+   while(boton == ""){
+    boton = myNextion.listen(); //check for message
+   }
+   Serial.println(boton);
+   if (boton == "65 1 1 0 ffff ffff ffff") {
+      Serial.println("ENTRADA");
+      myNextion.sendCommand("p0.pic=7");
+   }
+}
+    
+
+// Cambiar a pagina Escritorio
+// myNextion.sendCommand("page Escritorio");
+
+// Cambiar foto
+// myNextion.sendCommand("p0.pic=2");
+
+// Capturar boton
+// Hacer marca
+// Si la marca se hace correctamente, mostrar pagina mensaje exitoso, sino tratar de nuevo
+
+
 
 // ------------------------------------------------------------------------------------------
 // LOOP
 // ------------------------------------------------------------------------------------------
 void loop(){
   leerCodigo();
+  //seleccionarBoton();
 }
