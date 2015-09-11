@@ -1,3 +1,5 @@
+//BOTONES Nextion
+
 //Ejemplo: 65 0 2 0 ffff ffff ffff
 //
 //  65: This message is a touch event
@@ -15,3 +17,12 @@
 //b5 -> F.Almuerzo:       65 1 6 1 ffff ffff ffff
 
 
+
+// ESP8266
+// Connections
+//ESP8266 <--> Nano
+//GND <--> GND
+//VCC <--> 5V
+//CH_PD <--> 5V
+//RX <--> D10
+//TX <--> D11

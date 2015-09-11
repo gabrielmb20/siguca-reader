@@ -18,8 +18,10 @@ http://www.ebay.com/usr/worldchips?_trksid=p2047675.l2559
 
 #include <SoftwareSerial.h>
 SoftwareSerial softSerial(2, 3); // RX, TX
-String WSSID = "gcs-soporte";
-String WPASS = "Ufawuow1otho";
+//String WSSID = "gcs-soporte";
+//String WPASS = "Ufawuow1otho";
+String WSSID = "Home";
+String WPASS = "darkside";
 bool r;
 
 void setup() {
@@ -35,10 +37,10 @@ void setup() {
 }
 
 void loop(){
-  //r = espSendCommand( "AT+CIPSTART=\"TCP\",\"108.59.11.102\",80" , "OK" , 5000 );
-  //String getRequest = "GET /shiznic/ HTTP/1.1\r\nHost: www.rootpower.com\r\n";
-  r = espSendCommand( "AT+CIPSTART=\"TCP\",\"10.42.30.13\",3000" , "OK" , 5000 );
-  String getRequest = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.42.30.13\r\n";
+//  r = espSendCommand( "AT+CIPSTART=\"TCP\",\"10.42.30.13\",3000" , "OK" , 5000 );
+//  String getRequest = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.42.30.13\r\n";
+  r = espSendCommand( "AT+CIPSTART=\"TCP\",\"192.168.0.105\",80" , "OK" , 5000 );
+  String getRequest = "GET /test HTTP/1.1\r\nHost: 192.168.0.105\r\n";
   int getRequestLength = getRequest.length() + 2; // add 2 because \r\n will be appended by SoftwareSerial.println().
   r = espSendCommand( "AT+CIPSEND=" + String(getRequestLength) , "OK" , 5000 );
   r = espSendCommand( getRequest , "+IPD" , 15000 );
@@ -54,13 +56,13 @@ void loop(){
 
 void espSerialSetup() {
   // change baud rate so SoftwareSerial works better -- need a certain version of ESP for this to work and be retained after power cycle
-  // make sure Serial Monitor port speed is set to 115200
-  softSerial.begin(115200); // default baud rate for ESP8266
+  // make sure Serial Monitor port speed is set to 9600
+  softSerial.begin(9600); // default baud rate for ESP8266
   delay(1000);
-  softSerial.println("AT+CIOBAUD=115200");
+  softSerial.println("AT+CIOBAUD=9600");
   delay(1000);
-  softSerial.begin(115200);
-  Serial.begin(115200);
+  softSerial.begin(9600);
+  Serial.begin(9600);
 }
 
 bool espSendCommand(String cmd, String goodResponse, unsigned long timeout) {
