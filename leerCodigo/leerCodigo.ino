@@ -90,6 +90,9 @@ void validarCodigo(){
 // LEER CODIGO
 // ------------------------------------------------------------------------------------------------------------------------------------
 void leerCodigo(){
+  myNextion.sendCommand("page Inicio");  
+  RFID.listen();
+  delay(2000);
   ok = -1; 
 
   if (RFID.available() > 0){
@@ -112,7 +115,7 @@ void leerCodigo(){
   // Codigo Valido
   if (ok > 0){
     Serial.println("Acceso Valido");    
-    inicializarESP(); // Inicializar el objeto serial para el ESP8266 
+//    inicializarESP(); // Inicializar el objeto serial para el ESP8266 
     seleccionarBoton();
     digitalWrite(yes, HIGH);
     delay(1000);
@@ -134,7 +137,12 @@ void leerCodigo(){
 // ------------------------------------------------------------------------------------------------------------------------------------
 void seleccionarBoton(){
    myNextion.sendCommand("page Escritorio");  
+
+   
    myNextion.sendCommand("p0.pic=7");
+
+
+   
    nextion.listen();
    boton="";
    while(boton == ""){
@@ -142,52 +150,54 @@ void seleccionarBoton(){
    }
    Serial.println(boton);
 
-     //  r = espEnviarComando( "AT+CIPSTART=\"TCP\",\"10.42.30.13\",3000" , "OK" , 5000 );
- //  String getRequest = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.42.30.13\r\n";
-
  
    //-------------------------------------------------------//
    if (boton == "65 1 1 0 ffff ffff ffff") {
-      Serial.println("ENTRADA");
-        String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
-        espGET(request);
+        myNextion.sendCommand("p0.pic=5");
+        Serial.println("ENTRADA");
+        String request2 = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+
+//        String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+        espGET(request2);
    }
    //-------------------------------------------------------//
    if (boton == "65 1 2 0 ffff ffff ffff") {
-      Serial.println("INICIO RECESO");
-        String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+        Serial.println("INICIO RECESO");
+        String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
         espGET(request);
    }
    //-------------------------------------------------------//
    if (boton == "65 1 3 0 ffff ffff ffff") {
-      Serial.println("INICIO ALMUERZO");
-        String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+        Serial.println("INICIO ALMUERZO");
+        String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
         espGET(request);
    }
    //-------------------------------------------------------//
    if (boton == "65 1 4 0 ffff ffff ffff") {
-      Serial.println("SALIDA");
-        String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+        Serial.println("SALIDA");
+        String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
         espGET(request);
    }
    //-------------------------------------------------------//
    if (boton == "65 1 5 0 ffff ffff ffff") {
-      Serial.println("FIN RECESO");
-        String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+        Serial.println("FIN RECESO");
+        String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
         espGET(request);
    }
    //-------------------------------------------------------//
    if (boton == "65 1 6 0 ffff ffff ffff") {
-      Serial.println("FIN ALMUERZO");
-        String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+        Serial.println("FIN ALMUERZO");
+        String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
         espGET(request);
    }
    //-------------------------------------------------------//
    if (boton == "65 1 1 0 ffff ffff ffff") {
-      Serial.println("ENTRADA");
-        String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+        Serial.println("ENTRADA");
+        String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
         espGET(request);
    } 
+   myNextion.sendCommand("page MarcaRealizada");  
+   delay(2000);
 }
 
 
@@ -196,14 +206,14 @@ void seleccionarBoton(){
 // ------------------------------------------------------------------------------------------------------------------------------------
 void inicializarESP() {
   ESP.begin(9600); // default baud rate for ESP8266
-  delay(2000);
+//  delay(2000);
   Serial.println("\n... VERIFICANDO CONEXION DEL ESP...\n");
-  ESP.println("AT+RST");
-  delay(2000);
-  ESP.println("AT+CWMODE=3");
-  delay(1000);
-  ESP.println("AT+CWJAP=\""+WSSID+"\",\""+WPASS+"\"");
-  delay(9000);
+//  ESP.println("AT+RST");
+//  delay(2000);
+//  ESP.println("AT+CWMODE=3");
+//  delay(1000);
+//  ESP.println("AT+CWJAP=\""+WSSID+"\",\""+WPASS+"\"");
+//  delay(9000);
   Serial.println("\n\nESP CONECTADO\n");
 }
 
@@ -248,23 +258,12 @@ bool espEnviarComando(String cmd, String goodResponse, unsigned long timeout) {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 void espGET(String url){ 
-  ESP.println("AT+CIPSTART=\"TCP\",\"10.10.10.10\",80");
+  ESP.println("AT+CIPSTART=\"TCP\",\"10.10.10.10\",3000");
   delay(200);
   int getRequestLength = url.length() + 2; // add 2 because \r\n will be appended by SoftwareSerial.println().
   ESP.println("AT+CIPSEND=" + String(getRequestLength));
   delay(2000);
-//  r = espEnviarComando( "AT+CIPSEND=" + String(getRequestLength) , "OK" , 2000 );
-  r = espEnviarComando( url , "+IPD" , 10000 );
-  if( !r ) {
-//    Serial.println("No se pudo hacer el GET, reintentando...");    
-//    espEnviarComando( "AT+RST" , "ready" , 5000);
-//    espEnviarComando( "AT+CWMODE=3" , "OK" , 1500 );
-//    espEnviarComando( "AT+CWJAP=\""+WSSID+"\",\""+WPASS+"\"" , "OK" , 9000 );
-    inicializarESP();
-    
-//    delay(3000);
-    espGET(url);
-  }
+  r = espEnviarComando( url , "+IPD" , 5000 );
 }
 
   
@@ -275,6 +274,9 @@ void loop(){
 //  leerCodigo();
   
   inicializarESP(); // Inicializar el objeto serial para el ESP8266 
-  String request = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+  String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
   espGET(request);
+ 
+//  String request2 = "GET /test HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+//  espGET(request2);
 }
