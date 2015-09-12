@@ -89,9 +89,8 @@ void validarCodigo(){
 void leerCodigo(){
   myNextion.sendCommand("page Inicio");  
   RFID.listen();
-  delay(2000);
+  delay(2000);  
   ok = -1; 
-
   if (RFID.available() > 0){
     // Lectura del codigo RFID, se necesitan algunos segundos para permitir que la informacion ingrese en el bufer serial.
     delay(150);  
@@ -113,8 +112,8 @@ void leerCodigo(){
   if (ok > 0){
     Serial.println("Acceso Valido");    
     digitalWrite(13, HIGH);
-    delay(2000);
-    digitalWrite(13, LOW); 
+//    delay(2000);
+//    digitalWrite(13, LOW); 
     seleccionarBoton();
     ok = -1;
   }
@@ -195,7 +194,8 @@ void seleccionarBoton(){
    ESP.println("AT+CIPSEND=" + String(getRequestLength));
    delay(1000);
    espEnviarComando( url , "+IPD" , 3000 );  
-   ESP.println("AT+RST");
+//   ESP.println("AT+RST");////////////
+   digitalWrite(13, LOW); 
 }
 
 
@@ -272,7 +272,7 @@ void loop(){
    leerCodigo();
  
   
-//
+
 //  inicializarESP();
 //  String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
 //  espGET(request);
