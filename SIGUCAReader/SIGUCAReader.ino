@@ -24,14 +24,32 @@ String WPASS = "sigucareader-pi";
 //String WSSID = "gcs-soporte";
 //String WPASS = "Ufawuow1otho";
 bool r;
-int codRFID;
+String codRFID;
 // ------------------------------------------------------------------------------------------------------------------------------------
 // CODIGOS VALIDOS
 // ------------------------------------------------------------------------------------------------------------------------------------
 // Llavero: 0004199764
 int tag1[14] = {2,53,57,48,48,52,48,49,53,53,52,53,56,3};
-// Tarjeta: 0006488185
-int tag2[14] = {2,50,48,48,48,54,51,48,48,55,57,51,65,3};
+//// Tarjeta: 0006488185
+//int tag2[14] = {2,50,48,48,48,54,51,48,48,55,57,51,65,3};
+// Llavero: 0003591771
+int tag3[14] = {2,51,67,48,48,51,54,67,69,53,66,57,70,3};
+
+//// Llavero: 0004704344
+//int tag4[14] = {2,51,66,48,48,52,55,67,56,53,56,69,67,3};
+//// Llavero: 0003723895
+//int tag5[14] = {55,55,65,49,3,2,51,67,48,48,51,56,68,3};
+
+//// Llavero: 0008019492
+//int tag6[14] = {2,51,66,48,48,55,65,53,69,50,52,51,66,3};
+//// Llavero: 0008841990
+//int tag7[14] = {2,49,69,48,48,56,54,69,66,48,54,55,53,3};
+//// Llavero: 0008813705
+//int tag8[14] = {2,49,69,48,48,56,54,55,67,56,57,54,68,3};
+//// Llavero: 000336606
+//int tag9[14] = {2,51,67,48,48,51,51,53,69,67,69,57,70,3};
+//// Llavero: 0008227441
+//int tag10[14] = {2,51,66,48,48,55,68,56,65,55,49,66,68,3};
 // Usado para comparaciones
 int newtag[14] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0}; 
 
@@ -73,14 +91,29 @@ void validarCodigo(){
   // 0 = lectura de bit no acertada
   // -1 = no lectura
   ok = 0; 
-  if (compararCodigo(newtag, tag1) == true){
-    codRFID=1;
+  if (compararCodigo(newtag, tag1) == true){// Gabriel Llavero
+    codRFID="7";
     ok++;
   }
-  if (compararCodigo(newtag, tag2) == true){
+//  if (compararCodigo(newtag, tag2) == true){// Gabriel Tarjeta
+//    ok++;
+//    codRFID="7";
+//  }
+  else
+  if (compararCodigo(newtag, tag3) == true){// Carolina
+    codRFID="5";
     ok++;
-    codRFID=2;
   }
+//  else
+//  if (compararCodigo(newtag, tag4) == true){// Gaudy
+//    codRFID="8";
+//    ok++;
+//  }
+//  else
+//  if (compararCodigo(newtag, tag5) == true){// Kimberly
+//    codRFID="10";
+//    ok++;
+//  }
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -120,9 +153,9 @@ void leerCodigo(){
   // Codigo Invalido
   else if (ok == 0){
     Serial.println("Acceso Invalido");
-    digitalWrite(12, HIGH);
+    digitalWrite(13, HIGH);
     delay(1000);
-    digitalWrite(12, LOW); 
+    digitalWrite(13, LOW); 
     ok = -1;
   }
 }
@@ -132,11 +165,10 @@ void leerCodigo(){
 // ------------------------------------------------------------------------------------------------------------------------------------
 void seleccionarBoton(){
    myNextion.sendCommand("page Escritorio");  
-
-   
-   myNextion.sendCommand("p0.pic=7");
-
-
+   String foto = "p0.pic=" + codRFID;
+   const char * c = foto.c_str();
+   myNextion.sendCommand(c);
+  
    
    nextion.listen();
    boton="";
@@ -189,7 +221,7 @@ void seleccionarBoton(){
 
    }
    //-------------------------------------------------------//
-   url = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=" + marca + " HTTP/1.1\r\nHost: 10.10.10.10\r\n";
+   url = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=" + codRFID + "&tipoMarca=" + marca + " HTTP/1.1\r\nHost: 10.10.10.10\r\n";
    getRequestLength = url.length() + 2; // add 2 because \r\n will be appended by SoftwareSerial.println().
    ESP.println("AT+CIPSEND=" + String(getRequestLength));
    delay(1000);
@@ -271,8 +303,6 @@ void espGET(String url){
 void loop(){
    leerCodigo();
  
-  
-
 //  inicializarESP();
 //  String request = "GET /rfidReader?pwd1=ooKa6ieC&pwd2=of2Oobai&codTarjeta=111&tipoMarca=1 HTTP/1.1\r\nHost: 10.10.10.10\r\n";
 //  espGET(request);
